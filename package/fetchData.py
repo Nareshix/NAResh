@@ -23,6 +23,11 @@ def get_download_link(app):
     else:
         show_error()
 
+def get_symlink(app):
+    if response.status_code == 200:
+        return data[app]["symlink"]
+    else:
+        show_error()
 
 def check_multiple_files(app):
     if response.status_code == 200:
