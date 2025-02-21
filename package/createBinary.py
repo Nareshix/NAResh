@@ -6,7 +6,7 @@ import subprocess
 LOCAL_BIN_PATH = r'/usr/local/bin'
 
 def createBinary(app):
-    BINARY_PATH = f'{BINARY_PATH}/{app}'
+    BINARY_PATH = f'{LOCAL_BIN_PATH}/{app}'
 
     if not os.path.exists(LOCAL_BIN_PATH):
         os.makedirs(LOCAL_BIN_PATH)
