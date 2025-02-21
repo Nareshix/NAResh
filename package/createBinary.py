@@ -26,4 +26,5 @@ def createBinary(app):
     os.remove(fileName)     
 
     #Create a symlink (available to use anywhere in terminal)
-    subprocess.run(['ln', '-s', APP_PATH, get(app,'symlink')])  
+    symlink = get(app,'symlink')
+    subprocess.run(['sudo', 'ln', '-s', f'{APP_PATH}/{symlink}' , f"/usr/local/bin/{symlink}"])  
