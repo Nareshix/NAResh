@@ -1,4 +1,4 @@
 test.py
 package.egg-info/
-package/__pycache__
+package/__pycache__/
 .vscode/
