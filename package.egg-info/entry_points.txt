@@ -1,0 +1,3 @@
+[console_scripts]
+nar = package.scripts.naresh:cli
+naresh = package.scripts.naresh:cli
