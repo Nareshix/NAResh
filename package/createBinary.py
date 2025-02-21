@@ -3,22 +3,25 @@ from package.fetchData import check_multiple_files, get_download_link
 import subprocess
 
 
-BINARY_PATH = r'/usr/local/bin'
+LOCAL_BIN_PATH = r'/usr/local/bin'
 
 def createBinary(app):
-    if check_multiple_files(app):
-        
-        if not os.path.exists(BINARY_PATH):
-            os.makedirs(BINARY_PATH)
+    BINARY_PATH = f'{BINARY_PATH}/{app}'
 
-        website = get_download_link(app)
+    if not os.path.exists(LOCAL_BIN_PATH):
+        os.makedirs(LOCAL_BIN_PATH)
 
-        #Downloads file
-        subprocess.run(['wget',  website ])
+    
+    subprocess.run(['sudo', 'mkdir', BINARY_PATH])
 
-        fileName = website.split('/')[-1]
+    website_url = get_download_link(app)
 
-        #extracts the file to local binary
-        subprocess.run(["sudo", "tar", "-xvzf",fileName , "-C", BINARY_PATH])
+    #Downloads file
+    subprocess.run(['wget',  website_url ])
 
-        os.remove(fileName)
+    fileName = website_url.split('/')[-1]
+
+    #extracts the file to local binary
+    subprocess.run(["sudo", "tar", "-xvzf",fileName , "-C", BINARY_PATH])
+    
+    os.remove(fileName)       
