@@ -19,7 +19,7 @@ def show_error():
 
 def get_download_link(app):
     if response.status_code == 200:
-        return data[app]["link"]
+        return data[app]["download_link"]
     else:
         show_error()
 
