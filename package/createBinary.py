@@ -1,6 +1,7 @@
 import os
 from package.fetchData import get
 import subprocess
+import platform
 
 home_dir = os.path.expanduser('~')
 STORAGE_FOLDER_PATH = home_dir + '/' + '.naresh' # $HOME/.naresh
@@ -9,39 +10,43 @@ STORAGE_FOLDER_PATH = home_dir + '/' + '.naresh' # $HOME/.naresh
 def createBinary(app):
     if not os.path.exists(STORAGE_FOLDER_PATH):
         os.makedirs(STORAGE_FOLDER_PATH)
+    APP_PATH = STORAGE_FOLDER_PATH + '/' + app + '/'
 
-    if get(app,"official_ppa"):  #if offical ppa exists, use that instead
+
+    #if offical ppa exists, use that instead
+    if get(app,"official_ppa"):  
         for command in get(app,"download"):
             subprocess.run(command, shell=True, check=True)
         
-        APP_PATH = STORAGE_FOLDER_PATH + '/' + app
         if not os.path.exists(APP_PATH):
             os.makedirs(APP_PATH)
         return
+
+
+    # creates the folder for the app
+    if not os.path.exists(APP_PATH):
+        os.makedirs(APP_PATH)    
+
+    website_url = get(app,"download")
+
+
+    #Downloads file
+    subprocess.run(['wget',  website_url ])
+
+    fileName = website_url.split('/')[-1]
+
+    #extracts the file to local binary
+    subprocess.run(["sudo", "tar", "-xvzf",fileName ,"--strip-components=1", "-C", APP_PATH])
+
+    os.remove(fileName)     
+
+    symlink = get(app,'symlink')
+    BIN_PATH = APP_PATH + get(app,'bin_path')
+
     
+    if not os.access(BIN_PATH, os.X_OK): # if not executable
+        os.chmod(BIN_PATH, 0o755)  # chmod +x
 
-
-
-
-#     if not os.path.exists(STORAGE_FOLDER_PATH):
-#         os.makedirs(STORAGE_FOLDER_PATH)
-        
-#     APP_PATH = STORAGE_FOLDER_PATH + '/' + app
-#     if not os.path.exists(APP_PATH):
-#         os.makedirs(APP_PATH)
-
-#     website_url = get(app,"download_link")
-
-#     #Downloads file
-#     subprocess.run(['wget',  website_url ])
-
-#     fileName = website_url.split('/')[-1]
-
-#     #extracts the file to local binary
-#     subprocess.run(["sudo", "tar", "-xvzf",fileName , "-C", APP_PATH])
-    
-#     os.remove(fileName)     
-
-#     #Create a symlink (available to use anywhere in terminal)
-#     symlink = get(app,'symlink')
-#     subprocess.run(['sudo', 'ln', '-s', f'{APP_PATH}/{symlink}' , f"/usr/local/bin/{symlink}"])  
+    #Create a symlink
+    subprocess.run(['sudo', 'ln', '-s', BIN_PATH , f"/usr/local/bin/{symlink}"])  
+    print(f'{APP_PATH}/{BIN_PATH}')
