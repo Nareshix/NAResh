@@ -5,17 +5,18 @@ import subprocess
 home_dir = os.path.expanduser('~')
 STORAGE_FOLDER_PATH = home_dir + '/' + '.naresh' # $HOME/.naresh
 
-ALIAS = {
-    "codium": "vscodium"
-}
 
 def createBinary(app):
-    if app in ALIAS:
-        app = ALIAS[app]
+    if not os.path.exists(STORAGE_FOLDER_PATH):
+        os.makedirs(STORAGE_FOLDER_PATH)
 
     if get(app,"official_ppa"):  #if offical ppa exists, use that instead
         for command in get(app,"download"):
             subprocess.run(command, shell=True, check=True)
+        
+        APP_PATH = STORAGE_FOLDER_PATH + '/' + app
+        if not os.path.exists(APP_PATH):
+            os.makedirs(APP_PATH)
         return
     
 
