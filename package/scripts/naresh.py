@@ -1,11 +1,19 @@
 import click
 from package.createBinary import createBinary
 
+
+
+ALIAS = {
+    "vscodium": "codium"
+}
+
+
 @click.argument('app')
 @click.command()
 def install(app):
+    if app in ALIAS:
+        app = ALIAS[app]
     createBinary(app)
-    
 
 @click.command()
 def remove():
