@@ -1,5 +1,6 @@
 import click
 from package.createBinary import createBinary
+from package.removeBinary import removeBinary
 
 
 
@@ -15,9 +16,13 @@ def install(app):
         app = ALIAS[app]
     createBinary(app)
 
+
+@click.argument('app')
 @click.command()
-def remove():
-    pass
+def remove(app):
+    if app in ALIAS:
+        app = ALIAS[app]
+    removeBinary(app)
 
 @click.command()
 def update():
@@ -41,6 +46,7 @@ def cli():
     pass
 
 cli.add_command(install)
+cli.add_command(remove)
 
 if __name__ == '__main__':
     cli()
