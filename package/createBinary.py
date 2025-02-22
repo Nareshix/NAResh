@@ -30,15 +30,20 @@ def createBinary(app):
     website_url = get(app,"download")
 
 
-    #Downloads file
-    subprocess.run(['wget',  website_url ])
+    #Directly download bin if no tar.gz
+    if not website_url.endswith('.tar.gz'):
+        subprocess.run(['wget', "-P", APP_PATH, website_url])
+    else:
+        #Downloads file
+        subprocess.run(['wget',  website_url ])
 
-    fileName = website_url.split('/')[-1]
+        fileName = website_url.split('/')[-1]
 
-    #extracts the file to local binary
-    subprocess.run(["sudo", "tar", "-xvzf",fileName ,"--strip-components=1", "-C", APP_PATH])
+        #extracts the file to local binary
+        subprocess.run(["sudo", "tar", "-xvzf",fileName ,"--strip-components=1", "-C", APP_PATH])
 
-    os.remove(fileName)     
+        os.remove(fileName)     
+
 
     symlink = get(app,'symlink')
     BIN_PATH = APP_PATH + get(app,'bin_path')
@@ -49,4 +54,3 @@ def createBinary(app):
 
     #Create a symlink
     subprocess.run(['sudo', 'ln', '-s', BIN_PATH , f"/usr/local/bin/{symlink}"])  
-    print(f'{APP_PATH}/{BIN_PATH}')
